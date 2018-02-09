@@ -1,3 +1,85 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
+
+User = get_user_model()
+
+class Eventmaker(models.Model):
+    canAdd = models.BooleanField(
+        default = False,
+    )
+    user = models.OneToOneField(
+        User,
+        on_delete = models.CASCADE,
+    )
 
 # Create your models here.
+class Organization(models.Model):
+    name = models.CharField(
+        max_length=140,
+    )
+    def __str__(Self):
+        return self.name
+
+class Event(models.Model):
+    name = models.CharField(
+        max_length=140,
+    )
+    venue = models.CharField(
+        max_length=40,
+    )
+    description = models.TextField(
+    )
+    date = models.DateField(
+        default = timezone.now,
+    )
+    organizer = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+    )
+    createdby = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    def __str__(Self):
+        return self.name
+
+class Nakki(models.Model):
+    event = models.ForeignKey(
+        Event,
+        on_delete=models.CASCADE,
+    )
+    task = models.CharField(
+        max_length=140,
+    )
+    starttime = models.DateTimeField(
+        default = timezone.now,
+    )
+    endtime = models.DateTimeField(
+        default = timezone.now,
+    )
+    personcount = models.IntegerField(
+        default = 1,
+        validators=[MinValueValidator(1)]
+    )
+
+class Nakittautuminen(models.Model):
+    nakki = models.ForeignKey(
+        Nakki,
+        on_delete=models.CASCADE,
+    )
+    person = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+
+class Orgadmin(models.Model):
+    organization = models.ForeignKey(
+        Organization,
+        on_delete=models.CASCADE,
+    )
+    person = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
