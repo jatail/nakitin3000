@@ -1,0 +1,19 @@
+{% include "base.html" %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <ul>
+                {% for event in upcomingevents %}
+                    <li><a href="event/{{ event.id }}">{{ event.name }}, {{ event.date }}</a></li>
+                {% empty %}
+                    <li>Sorry, no upcoming events in this list.</li>
+                {% endfor %}
+            </ul>
+            
+        </div>
+        <div class="col">
+            Heips
+        </div>
+    </div>
+</div>

@@ -19,7 +19,7 @@ class Organization(models.Model):
     name = models.CharField(
         max_length=140,
     )
-    def __str__(Self):
+    def __str__(self):
         return self.name
 
 class Event(models.Model):
@@ -42,7 +42,7 @@ class Event(models.Model):
         User,
         on_delete=models.CASCADE,
     )
-    def __str__(Self):
+    def __str__(self):
         return self.name
 
 class Nakki(models.Model):
@@ -63,6 +63,8 @@ class Nakki(models.Model):
         default = 1,
         validators=[MinValueValidator(1)]
     )
+    def __str__(self):
+        return self.task + " @ " + self.event.name
 
 class Nakittautuminen(models.Model):
     nakki = models.ForeignKey(
@@ -73,6 +75,8 @@ class Nakittautuminen(models.Model):
         User,
         on_delete=models.CASCADE,
     )
+    def __str__(self):
+        return self.nakki.task + " @ " + self.event.name
 
 class Orgadmin(models.Model):
     organization = models.ForeignKey(
