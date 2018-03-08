@@ -21,8 +21,8 @@
                 {{ nakki.starttime }} - {{ nakki.endtime }} <br>
                 Paikkoja: {{ nakki.personcount }} <br>
                 Nakissa: <br>
-                <button type="button" class="btn btn-primary">Nakittaudu</button>
-                <button type="button" class="btn btn-secondary">Peruuta</button>
+                <a href="/regnakki/{{ nakki.id }}"<button type="button" class="btn btn-primary">Nakittaudu</button></a>
+                <a href="/cancelnakki/{{ nakki.id }}"<button type="button" class="btn btn-secondary">Peruuta</button></a>
             </p>
             {% empty %}
                 <b>Ei nakkeja</b>

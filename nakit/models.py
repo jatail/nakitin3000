@@ -76,7 +76,7 @@ class Nakittautuminen(models.Model):
         on_delete=models.CASCADE,
     )
     def __str__(self):
-        return self.nakki.task + " @ " + self.event.name
+        return self.nakki.task + " @ " + self.nakki.event.name
 
 class Orgadmin(models.Model):
     organization = models.ForeignKey(
