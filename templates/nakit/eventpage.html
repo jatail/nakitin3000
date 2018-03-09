@@ -20,7 +20,13 @@
                 <h5>{{ nakki.task }}</h5>
                 {{ nakki.starttime }} - {{ nakki.endtime }} <br>
                 Paikkoja: {{ nakki.personcount }} <br>
-                Nakissa: <br>
+                Nakissa: 
+                {% for item in nakittautumiset %}
+                    {% if item.nakki == nakki %}
+                        {{ item.person.first_name }} {{ item.person.last_name }}
+                    {% endif %}
+                {% endfor %}
+                <br>
                 <a href="/regnakki/{{ nakki.id }}"<button type="button" class="btn btn-primary">Nakittaudu</button></a>
                 <a href="/cancelnakki/{{ nakki.id }}"<button type="button" class="btn btn-secondary">Peruuta</button></a>
             </p>

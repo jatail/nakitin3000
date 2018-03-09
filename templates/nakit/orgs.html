@@ -1,0 +1,22 @@
+{% include "base.html" %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+
+            <h3> Järjestelmään rekisteröityneet järjestöt</h3>
+            <ul>
+                {% for org in organizations %}
+                    <li><a href="/org/{{ org.id }}">{{ org.name }}</a></li>
+                {% empty %}
+                    <li>Ei rekisteröityneitä järjestöjä</li>
+                {% endfor %}
+            </ul>
+            
+        </div>
+        <div class="col">
+            <h3>Terve tuloa Nakittimeen!</h3>
+            Heips
+        </div>
+    </div>
+</div>
