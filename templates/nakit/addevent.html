@@ -1,0 +1,56 @@
+{% include "base.html" %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Lisää tapahtuma</h3>
+            <form action="/addevent/" method="post">
+                {% csrf_token %}
+                <fieldset>
+                <div class="form-group">
+                    <label class="col-form-label" for="eventname">Tapahtuman nimi</label>
+                    <input class="form-control" placeholder="" id="eventname" name="eventname" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="org">Järjestäjä</label>
+                    <select class="form-control" id="org" name="org">
+                        {% for club in orgadmin %}
+                            <option>{{club}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="venue">Venue</label>
+                    <input class="form-control" placeholder="" id="venue" name="venue" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="description">Kuvaus</label>
+                    <textarea class="form-control" id="description" name="description" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker4"/>
+                        <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#datetimepicker4').datetimepicker({
+                                format: 'L'
+                            });
+                        });
+                    </script>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Lisää tapahtuma</button>
+                </fieldset>
+            </form>
+        </div>
+        <div class="col">
+            <h3>Ohje</h3>
+            Jukolan talo, eteläisessä Hämeessä, seisoo erään mäen pohjoisella rinteellä, liki Toukolan kylää. Sen läheisin ym­päristö on kivinen tanner, mutta alempana alkaa pellot, joissa, ennenkuin talo oli häviöön mennyt, aaltoili teräinen vilja. Peltojen alla on niittu, apilaäyräinen, halkileikkaama monipolvisen ojan; ja runsaasti antoi se heiniä, ennenkuin joutui laitumeksi kylän karjalle. Muutoin on talolla avaria metsiä, soita ja erämaita, jotka, tämän tilustan ensimmäisen perustajan oivallisen toiminnan kautta, olivat langenneet sille osaksi jo ison jaon käydessä entisinä aikoina. Silloinpa Jukolan isäntä, pitäen enemmän huolta jälkeentulevainsa edusta kuin omasta parhaastansa, otti vastaan osaksensa kulon polttaman metsän ja sai sillä keinolla seitsemän vertaa enemmän kuin toiset naapurinsa. Mutta kaikki kulovalkean jäljet olivat jo kadonneet hänen piiristänsä ja tuuhea metsä kasvanut sijaan. - Ja tämä on niiden seitsemän veljen koto, joiden elämänvaiheita tässä nyt käyn kertoilemaan.
+        </div>
+    </div>
+</div>

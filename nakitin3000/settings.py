@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'nakit'
+    'nakit',
 ]
 
 MIDDLEWARE = [
@@ -104,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fi-fi'
 
 TIME_ZONE = 'Europe/Helsinki'
 
@@ -122,3 +122,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
   os.path.join(BASE_DIR, "static"),
 )
+
+
+LOGIN_REDIRECT_URL = '/'

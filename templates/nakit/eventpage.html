@@ -27,8 +27,12 @@
                     {% endif %}
                 {% endfor %}
                 <br>
-                <a href="/regnakki/{{ nakki.id }}"<button type="button" class="btn btn-primary">Nakittaudu</button></a>
-                <a href="/cancelnakki/{{ nakki.id }}"<button type="button" class="btn btn-secondary">Peruuta</button></a>
+                {% if user.is_authenticated %}
+                    <a href="/regnakki/{{ nakki.id }}"<button type="button" class="btn btn-primary">Nakittaudu</button></a>
+                    <a href="/cancelnakki/{{ nakki.id }}"<button type="button" class="btn btn-secondary">Jänistä</button></a>
+                {% else %}
+                    <p class="text-warning">Nakittautuminen vaatii rekisteröitymisen!</p>
+                {% endif %}
             </p>
             {% empty %}
                 <b>Ei nakkeja</b>

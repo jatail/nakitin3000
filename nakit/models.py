@@ -7,12 +7,14 @@ User = get_user_model()
 
 class Eventmaker(models.Model):
     canAdd = models.BooleanField(
-        default = False,
+        default = True,
     )
     user = models.OneToOneField(
         User,
         on_delete = models.CASCADE,
     )
+    def __str__(self):
+        return self.user.first_name + " " + self.user.last_name
 
 # Create your models here.
 class Organization(models.Model):
@@ -87,3 +89,5 @@ class Orgadmin(models.Model):
         User,
         on_delete=models.CASCADE,
     )
+    def __str__(self):
+        return self.organization.name

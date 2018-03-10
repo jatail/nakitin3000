@@ -8,20 +8,48 @@ from django.contrib.auth.models import User
 import datetime
 # Create your views here.
 
+#tein oman rekisteröitymissivun, koska tottakai.
 def signup(request):
     if request.method == 'POST':
-        print("Password 1:", request.POST.get('password1'))
-        if request.POST.get('password1') == request.POST.get('password2'):
-            newuser = User.objects.create_user(request.POST.get('username'), request.POST.get('email'), request.POST.get('password1'))
-            newuser.first_name = request.POST.get('first')
-            newuser.last_name = request.POST.get('last') 
-            newuser.save()
-            return redirect('/')
-        else:
+        #vaaditaan ettei yksikään täytetyistä kentistä ole tyhjänä.
+        if (request.POST.get('first') == "") or (request.POST.get('last') == "") or (request.POST.get('username') == "") or (request.POST.get('email') == "") or (request.POST.get('password1') == "") or (request.POST.get('password2') == ""):
             raiseerror = True
-            errortext = 'Salasanat eivät täsmää!'
-            return render(request, "nakit/signup.html", {'raiseerror': raiseerror, 'errortext': errortext})            
+            errortext = 'Kaikkien kenttien tulee olla täytettynä.'
+            return render(request, "nakit/signup.html", {'raiseerror': raiseerror, 'errortext': errortext})  
+        try:
+            #tsekataan ettei spostia ole jo käytetty.
+            User.objects.get(email = request.POST.get('email'))
+            raiseerror = True
+            errortext = 'Sähköpostiosoitteella on jo rekisteröidytty järjestelmään.'
+            return render(request, "nakit/signup.html", {'raiseerror': raiseerror, 'errortext': errortext})               
+        except User.DoesNotExist:
+            pass
+        try:
+            #tsekataan onko käyttäjänimi jo käytetty
+            User.objects.get(username = request.POST.get('username'))
+            raiseerror = True
+            errortext = 'Käyttäjätunnus on jo varattu!'
+            return render(request, "nakit/signup.html", {'raiseerror': raiseerror, 'errortext': errortext})             
+        except User.DoesNotExist:
+            #täsmäähän syötetyt salasanat
+            if request.POST.get('password1') == request.POST.get('password2'):
+                try:
+                    #lopullinen rekisteröinti.
+                    newuser = User.objects.create_user(request.POST.get('username'), request.POST.get('email'), request.POST.get('password1'))
+                    newuser.first_name = request.POST.get('first')
+                    newuser.last_name = request.POST.get('last') 
+                    newuser.save()
+                    return redirect('/')
+                except:
+                    raiseerror = True
+                    errortext = 'Tapahtui tuntematon virhe. Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteys ylläpitoon.'
+                    return render(request, "nakit/signup.html", {'raiseerror': raiseerror, 'errortext': errortext})                   
+            else:
+                raiseerror = True
+                errortext = 'Salasanat eivät täsmää!'
+                return render(request, "nakit/signup.html", {'raiseerror': raiseerror, 'errortext': errortext})            
     else:
+        #jos tulee http-getillä päätyy tänne.
         raiseerror = False
         return render(request, "nakit/signup.html", {'raiseerror': raiseerror})
 
@@ -79,3 +107,20 @@ def org(request, org_id):
     events_past = Event.objects.filter(organizer=organizer)
 
     return render(request, "nakit/org.html", {'events_upcoming': events_upcoming, 'events_past' : events_past, 'org_name': organizer.name})
+
+@login_required
+def addevent(request):
+    try:
+        Eventmaker.objects.get(user = request.user)
+    except Eventmaker.DoesNotExist:
+        messagetitle = 'Ei käyttöoikeutta!'
+        messagebody = 'Käyttöoikeus tapahtuman lisäämiseen puuttuu. Mikäli tarvitset oikeudet ota yhteyttä ylläpitoon.'
+        return render(request, "nakit/messagepage.html", {'messagetitle': messagetitle, 'messagebody': messagebody})
+    try:
+        orgadmin = Orgadmin.objects.filter(person = request.user)
+    except Orgadmin.DoesNotExist:
+        messagetitle = 'Virhe!'
+        messagebody = 'Sinua ei ole lisätty yhdenkään järjestön tapahtumajärjestäjäksi. Ota yhteyttä ylläpitoon.'
+        return render(request, "nakit/messagepage.html", {'messagetitle': messagetitle, 'messagebody': messagebody})
+    
+    return render(request, "nakit/addevent.html", {'orgadmin': orgadmin})
