@@ -15,6 +15,11 @@
 
         <p>
             <h3>Nakit</h3>
+            {% if orgadmin %}
+            <p>
+                <a href="/addnakki/{{ event.id }}"><button type="button" class="btn btn-primary btn-lg">Lisää nakki tapahtumaan</button></a>
+            </p>
+            {% endif %}
             {% for nakki in nakit %}
             <p>
                 <h5>{{ nakki.task }}</h5>

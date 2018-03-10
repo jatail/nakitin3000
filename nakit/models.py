@@ -55,10 +55,10 @@ class Nakki(models.Model):
     task = models.CharField(
         max_length=140,
     )
-    starttime = models.DateTimeField(
+    starttime = models.TimeField(
         default = timezone.now,
     )
-    endtime = models.DateTimeField(
+    endtime = models.TimeField(
         default = timezone.now,
     )
     personcount = models.IntegerField(

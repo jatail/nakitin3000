@@ -39,7 +39,7 @@ def signup(request):
                     newuser.first_name = request.POST.get('first')
                     newuser.last_name = request.POST.get('last') 
                     newuser.save()
-                    return redirect('/')
+                    return redirect('/login')
                 except:
                     raiseerror = True
                     errortext = 'Tapahtui tuntematon virhe. Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteys ylläpitoon.'
@@ -61,9 +61,15 @@ def frontpage(request):
 def eventpage(request, event_id):
     event = Event.objects.get(id=event_id)
     nakit = Nakki.objects.filter(event=event).order_by('starttime')
+
+    try:
+        Orgadmin.objects.get(person=request.user, organization=event.organizer)
+        orgadmin = True
+    except Orgadmin.DoesNotExist:
+        orgadmin = False
     #nakittautumiset = Nakittautuminen.objects.filter.select_related(nakki.event == event)
     nakittautumiset = Nakittautuminen.objects.filter(nakki__event = event)
-    return render(request, "nakit/eventpage.html", {'event': event, 'nakit': nakit, 'nakittautumiset': nakittautumiset})
+    return render(request, "nakit/eventpage.html", {'event': event, 'nakit': nakit, 'nakittautumiset': nakittautumiset, 'orgadmin': orgadmin})
 
 @login_required
 def registertonakki(request, nakki_id):
@@ -123,4 +129,53 @@ def addevent(request):
         messagebody = 'Sinua ei ole lisätty yhdenkään järjestön tapahtumajärjestäjäksi. Ota yhteyttä ylläpitoon.'
         return render(request, "nakit/messagepage.html", {'messagetitle': messagetitle, 'messagebody': messagebody})
     
+    if request.method == 'POST':
+        eventname = request.POST.get('eventname')
+        organizer = request.POST.get('org')
+        venue = request.POST.get('venue')
+        description = request.POST.get('description')
+        pvm = request.POST.get('pvm')
+        newevent = Event(
+            name = eventname,
+            venue = venue,
+            description = description,
+            organizer = Organization.objects.get(name = organizer),
+            createdby = request.user,
+            date = pvm,
+        )
+        newevent.save()
+        redirectUrl = '/event/' + str(newevent.id)
+        return redirect(redirectUrl)  
+
+
     return render(request, "nakit/addevent.html", {'orgadmin': orgadmin})
+
+
+@login_required
+def addnakki(request, event_id):
+    event = Event.objects.get(id=event_id)
+    try:
+        Orgadmin.objects.get(person=request.user, organization=event.organizer)
+    except Orgadmin.DoesNotExist:
+        messagetitle = 'Virhe!'
+        messagebody = 'Sinulla ei ole oikeutta lisätä nakkia tähän tapahtumaan.'
+        return render(request, "nakit/messagepage.html", {'messagetitle': messagetitle, 'messagebody': messagebody})
+    if request.method == 'POST':
+        task = request.POST.get('task')
+        personcount = int(request.POST.get('personcount'))
+        starttime = request.POST.get('starttime')
+        endtime = request.POST.get('endtime')
+        newnakki = Nakki(
+            task = task,
+            event = event,
+            personcount = personcount,
+            starttime = starttime,
+            endtime = endtime,
+        )
+        newnakki.save()
+        showmessage = True
+        messagetitle = "Nakki lisätty!"
+        message = "Lisättiin uusi nakki onnistuneesti."
+        return render(request, "nakit/addnakki.html", {'event': event, 'showmessage': showmessage, 'messagetitle': messagetitle, 'message': message})
+
+    return render(request, "nakit/addnakki.html", {'event': event})
