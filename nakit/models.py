@@ -34,7 +34,6 @@ class Event(models.Model):
     description = models.TextField(
     )
     date = models.DateField(
-        default = timezone.now,
     )
     organizer = models.ForeignKey(
         Organization,
@@ -54,6 +53,9 @@ class Nakki(models.Model):
     )
     task = models.CharField(
         max_length=140,
+    )
+    date = models.DateField(
+        default = timezone.now,
     )
     starttime = models.TimeField(
         default = timezone.now,

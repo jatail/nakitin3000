@@ -6,7 +6,7 @@ from nakit.models import Organization, Event, Nakki, Nakittautuminen, Orgadmin, 
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
-import datetime
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -58,12 +58,13 @@ def signup(request):
         return render(request, "nakit/signup.html", {'raiseerror': raiseerror})
 
 def frontpage(request):
-    upcomingevents = Event.objects.order_by('date')
+    datenow = timezone.now().date()
+    upcomingevents = Event.objects.filter(date__range=[datenow, "2100-12-31"]).order_by('date')
     return render(request, "nakit/frontpage.html", {'upcomingevents': upcomingevents})
 
 def eventpage(request, event_id):
     event = Event.objects.get(id=event_id)
-    nakit = Nakki.objects.filter(event=event).order_by('task', 'starttime')
+    nakit = Nakki.objects.filter(event=event).order_by('date', 'starttime')
 
     try:
         Orgadmin.objects.get(person=request.user, organization=event.organizer)
@@ -115,9 +116,9 @@ def orgs(request):
 
 def org(request, org_id):
     organizer = Organization.objects.get(id=org_id)
-    now=datetime.datetime.now()
-    events_upcoming = Event.objects.filter(organizer=organizer)
-    events_past = Event.objects.filter(organizer=organizer)
+    datenow = timezone.now().date()
+    events_upcoming = Event.objects.filter(organizer=organizer, date__range=[datenow, "2100-12-31"]).order_by('date')
+    events_past = Event.objects.filter(organizer=organizer, date__range=["1970-01-01", datenow]).order_by('-date')
 
     return render(request, "nakit/org.html", {'events_upcoming': events_upcoming, 'events_past' : events_past, 'org_name': organizer.name})
 
@@ -172,16 +173,20 @@ def addnakki(request, event_id):
         personcount = int(request.POST.get('personcount'))
         starttime = request.POST.get('starttime')
         endtime = request.POST.get('endtime')
+        date = request.POST.get('date')
         if starttime == '':
             starttime = '00:00'
         if endtime == '':
             endtime = '00:00'
+        if date == '':
+            date = event.date
         newnakki = Nakki(
             task = task,
             event = event,
             personcount = personcount,
             starttime = starttime,
             endtime = endtime,
+            date = date,
         )
         newnakki.save()
         showmessage = True
@@ -205,8 +210,11 @@ def profile(request):
         if email != '':
             user.email = email
         user.save()
-
-    return render(request, "nakit/profile.html", {'user': user})
+    orgadmin = Orgadmin.objects.filter(person = user).order_by('organization__name')
+    nakkihistory = Nakittautuminen.objects.filter(person = user)
+#    nakkicount = Nakittautuminen.objects.filter(person = user).count()
+    nakkicount = nakkihistory.count()
+    return render(request, "nakit/profile.html", {'user': user, 'orgadmin': orgadmin, 'nakkicount': nakkicount, 'nakkihistory': nakkihistory})
 
 def change_password(request):
     if request.method == 'POST':

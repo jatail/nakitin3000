@@ -3,10 +3,10 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <h1>Käyttäjätiedot</h1>
+            <h3>Käyttäjätiedot</h3>
             <b>Käyttäjätunnus:</b> {{ user.username }}<br>
             <b>ID:</b> {{ user.id }} <br>
-            <h4><a href="/password">Vaihda salasana</a></h4>
+            <a href="/password">Vaihda salasana</a>
             <h3>Muokattavat tiedot</h3>
             <form action="/profile/" method="post">
                 {% csrf_token %}                
@@ -25,8 +25,31 @@
                 <button type="submit" class="btn btn-primary">Päivitä tiedot</button>
             </form>
         </div>
-        </div class="col">
-
+        <div class="col">
+        <h3>Yhdistykset</h3>
+                <p>
+                <ul>
+                {% for org in orgadmin %}
+                    <li>{{org}}</li>
+                {% empty %}
+                    <li>Et ole minkään yhdistyksen ylläpitäjä.</li>
+                {% endfor %}
+                </ul>
+                    Muiden yhdistysten ylläpito-oikeuksien lisääminen vaatii yhteydenoton ylläpitoon.
+                </p>
+        <h3>Tilastot</h3>
+            <p>
+            <b>Nakit yhteensä:</b> {{ nakkicount }} kpl
+            </p>
+            <p>
+            <ul>
+            {% for nakki in nakkihistory %}
+                    <li>{{ nakki }}</li>
+            {% empty %}
+                    <li>Et ole ollut nakeissa.</li>
+            {% endfor %}
+            </ul>
+            </p>
         </div>
     </div>
 </div>

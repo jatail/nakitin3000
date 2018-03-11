@@ -22,18 +22,20 @@
             {% endif %}
             {% for nakki in nakit %}
             <p>
-                <h3>{{ nakki.task }}</h3>
-                {{ nakki.starttime }} - {{ nakki.endtime }} <br>
-                Paikkoja: {{ nakki.personcount }} <br>
-                Nakissa: 
-                {% for item in nakittautumiset %}
-                    <br>
-                    {% if item.nakki == nakki %}
-                        {{ item.person.first_name }} {{ item.person.last_name }}
-                    {% endif %}
-                {% endfor %}
-                <br>
-                {% if user.is_authenticated %}
+            <div class="card border-secondary mb-3" style="max-width: 20rem;">
+            <div class="card-header">{{ nakki.date }} klo {{ nakki.starttime }} - {{ nakki.endtime }}</div>
+                <div class="card-body">
+                    <h4 class="card-title">{{ nakki.task }}</h4>
+                    <p class="card-text">
+                        Paikkoja: {{ nakki.personcount }} <br>
+                        Nakissa: 
+                        {% for item in nakittautumiset %}
+                            {% if item.nakki == nakki %}
+                                <br>
+                                <b>{{ item.person.first_name }} {{ item.person.last_name }}</b>
+                            {% endif %}
+                        {% endfor %}
+                    {% if user.is_authenticated %}
                     <form action="/regnakki/{{ nakki.id }}/" method="post">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-primary">Nakittaudu</button>
@@ -46,7 +48,9 @@
                 {% else %}
                     <p class="text-warning">Nakittautuminen vaatii rekisteröitymisen!</p>
                 {% endif %}
-            </p>
+                    </p>
+                </div>
+            </div>
             {% empty %}
                 <b>Ei nakkeja</b>
             {% endfor %}
