@@ -108,3 +108,7 @@ venv.bak/
 #paskaa
 migrations/
 db.sqlite3
+
+#näiden pitää olla joka asennuksella eriä
+secret_key.txt
+local.py
