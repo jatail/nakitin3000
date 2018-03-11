@@ -14,7 +14,7 @@
         </p> 
 
         <p>
-            <h3>Nakit</h3>
+            <h2>Nakit</h2>
             {% if orgadmin %}
             <p>
                 <a href="/addnakki/{{ event.id }}"><button type="button" class="btn btn-primary btn-lg">Lisää nakki tapahtumaan</button></a>
@@ -22,19 +22,27 @@
             {% endif %}
             {% for nakki in nakit %}
             <p>
-                <h5>{{ nakki.task }}</h5>
+                <h3>{{ nakki.task }}</h3>
                 {{ nakki.starttime }} - {{ nakki.endtime }} <br>
                 Paikkoja: {{ nakki.personcount }} <br>
                 Nakissa: 
                 {% for item in nakittautumiset %}
+                    <br>
                     {% if item.nakki == nakki %}
                         {{ item.person.first_name }} {{ item.person.last_name }}
                     {% endif %}
                 {% endfor %}
                 <br>
                 {% if user.is_authenticated %}
-                    <a href="/regnakki/{{ nakki.id }}"<button type="button" class="btn btn-primary">Nakittaudu</button></a>
-                    <a href="/cancelnakki/{{ nakki.id }}"<button type="button" class="btn btn-secondary">Jänistä</button></a>
+                    <form action="/regnakki/{{ nakki.id }}/" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Nakittaudu</button>
+                    </form>
+                    <br>
+                    <form action="/cancelnakki/{{ nakki.id }}/" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary">Jänistä</button>
+                    </form>
                 {% else %}
                     <p class="text-warning">Nakittautuminen vaatii rekisteröitymisen!</p>
                 {% endif %}

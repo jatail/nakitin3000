@@ -5,7 +5,11 @@ from django.contrib.auth.decorators import login_required
 from nakit.models import Organization, Event, Nakki, Nakittautuminen, Orgadmin, Eventmaker
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
+from django.views.decorators.http import require_http_methods
 import datetime
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
 
 #tein oman rekisteröitymissivun, koska tottakai.
@@ -55,23 +59,25 @@ def signup(request):
 
 def frontpage(request):
     upcomingevents = Event.objects.order_by('date')
-    print(upcomingevents)
     return render(request, "nakit/frontpage.html", {'upcomingevents': upcomingevents})
 
 def eventpage(request, event_id):
     event = Event.objects.get(id=event_id)
-    nakit = Nakki.objects.filter(event=event).order_by('starttime')
+    nakit = Nakki.objects.filter(event=event).order_by('task', 'starttime')
 
     try:
         Orgadmin.objects.get(person=request.user, organization=event.organizer)
         orgadmin = True
     except Orgadmin.DoesNotExist:
         orgadmin = False
+    except TypeError:
+        orgadmin = False
     #nakittautumiset = Nakittautuminen.objects.filter.select_related(nakki.event == event)
     nakittautumiset = Nakittautuminen.objects.filter(nakki__event = event)
     return render(request, "nakit/eventpage.html", {'event': event, 'nakit': nakit, 'nakittautumiset': nakittautumiset, 'orgadmin': orgadmin})
 
 @login_required
+@require_http_methods(["POST"])
 def registertonakki(request, nakki_id):
     nakki = Nakki.objects.get(id=nakki_id)
     event = nakki.event
@@ -93,6 +99,7 @@ def registertonakki(request, nakki_id):
     return redirect(redirectUrl)
 
 @login_required
+@require_http_methods(["POST"])
 def cancelnakittautuminen(request, nakki_id):
     nakki = Nakki.objects.get(id=nakki_id)
     user = request.user
@@ -165,6 +172,10 @@ def addnakki(request, event_id):
         personcount = int(request.POST.get('personcount'))
         starttime = request.POST.get('starttime')
         endtime = request.POST.get('endtime')
+        if starttime == '':
+            starttime = '00:00'
+        if endtime == '':
+            endtime = '00:00'
         newnakki = Nakki(
             task = task,
             event = event,
@@ -179,3 +190,36 @@ def addnakki(request, event_id):
         return render(request, "nakit/addnakki.html", {'event': event, 'showmessage': showmessage, 'messagetitle': messagetitle, 'message': message})
 
     return render(request, "nakit/addnakki.html", {'event': event})
+
+@login_required
+def profile(request):
+    user = request.user
+    if request.method == 'POST':
+        firstname = request.POST.get('first')
+        lastname = request.POST.get('last')
+        email = request.POST.get('email')
+        if firstname != '':
+            user.first_name = firstname
+        if lastname != '':
+            user.last_name = lastname
+        if email != '':
+            user.email = email
+        user.save()
+
+    return render(request, "nakit/profile.html", {'user': user})
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Salasana vaihdettu!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Virhe!')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'registration/change_password.html', {
+        'form': form
+    })

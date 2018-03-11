@@ -1,0 +1,32 @@
+{% include "base.html" %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>Käyttäjätiedot</h1>
+            <b>Käyttäjätunnus:</b> {{ user.username }}<br>
+            <b>ID:</b> {{ user.id }} <br>
+            <h4><a href="/password">Vaihda salasana</a></h4>
+            <h3>Muokattavat tiedot</h3>
+            <form action="/profile/" method="post">
+                {% csrf_token %}                
+                <div class="form-group">
+                    <label class="col-form-label" for="first">Etunimi</label>
+                    <input class="form-control" placeholder="{{ user.first_name}}" id="first" name="first" type="text">
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="last">Sukunimi</label>
+                    <input class="form-control" placeholder="{{ user.last_name}}" id="last" name="last" type="text">
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="email">Sähköposti</label>
+                    <input class="form-control" placeholder="{{ user.email }}" id="email" name="email" type="email">
+                </div>
+                <button type="submit" class="btn btn-primary">Päivitä tiedot</button>
+            </form>
+        </div>
+        </div class="col">
+
+        </div>
+    </div>
+</div>

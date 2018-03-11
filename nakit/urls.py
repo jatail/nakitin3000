@@ -13,4 +13,7 @@ urlpatterns = [
     url(r'orgs/', views.orgs, name='Organization list'),
     url(r'signup/', views.signup, name='Sign up'),
     url(r'org/(?:(?P<org_id>\d+)/)?$', views.org, name='List of all events by single organizer'),
+    url(r'profile/', views.profile, name='User profile'),
+    url(r'^password/$', views.change_password, name='change_password'),
+
 ]
