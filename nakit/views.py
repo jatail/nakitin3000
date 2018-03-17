@@ -125,16 +125,14 @@ def org(request, org_id):
 @login_required
 def addevent(request):
     try:
-        Eventmaker.objects.get(user = request.user)
-    except Eventmaker.DoesNotExist:
-        messagetitle = 'Ei käyttöoikeutta!'
-        messagebody = 'Käyttöoikeus tapahtuman lisäämiseen puuttuu. Mikäli tarvitset oikeudet ota yhteyttä ylläpitoon.'
-        return render(request, "nakit/messagepage.html", {'messagetitle': messagetitle, 'messagebody': messagebody})
-    try:
         orgadmin = Orgadmin.objects.filter(person = request.user)
+        if not orgadmin:
+            messagetitle = 'Virhe!'
+            messagebody = 'Sinua ei ole lisätty yhdenkään järjestön tapahtumajärjestäjäksi. Ota yhteyttä Asteriskin hallitukseen.'
+            return render(request, "nakit/messagepage.html", {'messagetitle': messagetitle, 'messagebody': messagebody})            
     except Orgadmin.DoesNotExist:
         messagetitle = 'Virhe!'
-        messagebody = 'Sinua ei ole lisätty yhdenkään järjestön tapahtumajärjestäjäksi. Ota yhteyttä ylläpitoon.'
+        messagebody = 'Sinua ei ole lisätty yhdenkään järjestön tapahtumajärjestäjäksi. Ota yhteyttä Asteriskin hallitukseen.'
         return render(request, "nakit/messagepage.html", {'messagetitle': messagetitle, 'messagebody': messagebody})
     
     if request.method == 'POST':
@@ -212,7 +210,7 @@ def profile(request):
         user.save()
     orgadmin = Orgadmin.objects.filter(person = user).order_by('organization__name')
     nakkihistory = Nakittautuminen.objects.filter(person = user)
-#    nakkicount = Nakittautuminen.objects.filter(person = user).count()
+    #nakkicount = Nakittautuminen.objects.filter(person = user).count()
     nakkicount = nakkihistory.count()
     return render(request, "nakit/profile.html", {'user': user, 'orgadmin': orgadmin, 'nakkicount': nakkicount, 'nakkihistory': nakkihistory})
 

@@ -112,4 +112,4 @@ db.sqlite3
 #näiden pitää olla joka asennuksella eriä
 secret_key.txt
 local.py
-settings.py
+nakitin3000/settings.py
