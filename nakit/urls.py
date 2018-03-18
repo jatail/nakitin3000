@@ -4,6 +4,8 @@ from . import views
 
 
 urlpatterns = [
+    url(r'editnakki/(?:(?P<nakki_id>\d+)/)?$', views.editnakki, name='Edit nakki'),
+    url(r'editevent/(?:(?P<event_id>\d+)/)?$', views.editevent, name='Edit event'),
     url(r'^$', views.frontpage, name='FrontPage'),
     url(r'addevent/', views.addevent, name='Add event'),
     url(r'addnakki/(?:(?P<event_id>\d+)/)?$', views.addnakki, name='Add nakki'),

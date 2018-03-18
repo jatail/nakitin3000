@@ -3,11 +3,14 @@
 <div class="container">
     <div class="row">
         <div class="col">
-        <h1>{{ event.name }}</h1>
+        <h1>{{ event.name }}</h1> 
         <p>
             Järjestäjä: <b>{{ event.organizer }}</b> <br>
             Päivämäärä: <b>{{ event.date }}</b> <br>
             Venue: <b>{{ event.venue }}</b> <br>
+        </p>
+        <p>
+        {% if orgadmin %} <a href="/editevent/{{ event.id }}"><button type="button" class="btn btn-primary">Muokkaa</button></a> {% endif %}
         </p>
         <p>
             {{ event.description}}
@@ -26,6 +29,9 @@
             <div class="card-header">{{ nakki.date }} klo {{ nakki.starttime }} - {{ nakki.endtime }}</div>
                 <div class="card-body">
                     <h4 class="card-title">{{ nakki.task }}</h4>
+                    <p>
+                        {% if orgadmin %} <a href="/editnakki/{{ nakki.id }}"><button type="button" class="btn btn-small">Muokkaa nakkia</button></a> {% endif %}
+                    </p>
                     <p class="card-text">
                         Paikkoja: {{ nakki.personcount }} <br>
                         Nakissa: 

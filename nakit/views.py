@@ -16,7 +16,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 def signup(request):
     if request.method == 'POST':
         #vaaditaan ettei yksikään täytetyistä kentistä ole tyhjänä.
-        if (request.POST.get('first') == "") or (request.POST.get('last') == "") or (request.POST.get('username') == "") or (request.POST.get('email') == "") or (request.POST.get('password1') == "") or (request.POST.get('password2') == ""):
+        if (request.POST.get('first').replace(' ', '') == "") or (request.POST.get('last').replace(' ', '') == "") or (request.POST.get('username') == "") or (request.POST.get('email') == "") or (request.POST.get('password1') == "") or (request.POST.get('password2') == ""):
             raiseerror = True
             errortext = 'Kaikkien kenttien tulee olla täytettynä.'
             return render(request, "nakit/signup.html", {'raiseerror': raiseerror, 'errortext': errortext})  
@@ -229,3 +229,70 @@ def change_password(request):
     return render(request, 'registration/change_password.html', {
         'form': form
     })
+
+
+@login_required
+def editevent(request, event_id):
+    event = Event.objects.get(id=event_id)
+
+    orgadmin = Orgadmin.objects.filter(person = request.user, organization = event.organizer)
+    if not orgadmin:
+        messagetitle = 'Virhe!'
+        messagebody = 'Sinua ei ole lisätty yhdenkään järjestön tapahtumajärjestäjäksi. Ota yhteyttä Asteriskin hallitukseen.'
+        return render(request, "nakit/messagepage.html", {'messagetitle': messagetitle, 'messagebody': messagebody}) 
+
+    if request.method == 'POST':
+        eventname = request.POST.get('eventname')
+        organizer = request.POST.get('org')
+        venue = request.POST.get('venue')
+        description = request.POST.get('description')
+        pvm = request.POST.get('pvm')
+        event.name = eventname
+        event.venue = venue
+        event.description = description
+        event.organizer = Organization.objects.get(name = organizer)
+        event.createdby = request.user
+        event.date = pvm
+        event.save()
+        redirectUrl = '/event/' + str(event.id)
+        return redirect(redirectUrl)
+    else:
+        datehack = str(event.date)
+        return render(request, "nakit/editevent.html", {'event': event, 'datehack': datehack})
+    
+@login_required
+def editnakki(request, nakki_id):
+    nakki = Nakki.objects.get(id=nakki_id)
+    event = nakki.event
+    try:
+        Orgadmin.objects.get(person=request.user, organization=event.organizer)
+    except Orgadmin.DoesNotExist:
+        messagetitle = 'Virhe!'
+        messagebody = 'Sinulla ei ole oikeutta lisätä nakkia tähän tapahtumaan.'
+        return render(request, "nakit/messagepage.html", {'messagetitle': messagetitle, 'messagebody': messagebody})
+    if request.method == 'POST':
+        task = request.POST.get('task')
+        personcount = int(request.POST.get('personcount'))
+        starttime = request.POST.get('starttime')
+        endtime = request.POST.get('endtime')
+        date = request.POST.get('date')
+        if starttime == '':
+            starttime = '00:00'
+        if endtime == '':
+            endtime = '00:00'
+        if date == '':
+            date = event.date
+        nakki.task = task
+        nakki.event = event
+        nakki.personcount = personcount
+        nakki.starttime = starttime
+        nakki.endtime = endtime
+        nakki.date = date
+        nakki.save()
+        redirectUrl = '/event/' + str(event.id)
+        return redirect(redirectUrl)
+    else:
+        datehack = str(nakki.date)
+        starttimehack = str(nakki.starttime)
+        endtimehack = str(nakki.endtime)
+        return render(request, "nakit/editnakki.html", {'event': event, 'nakki': nakki, 'datehack': datehack, 'starttimehack': starttimehack, 'endtimehack': endtimehack})

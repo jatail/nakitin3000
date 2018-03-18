@@ -1,0 +1,62 @@
+{% include "base.html" %}
+
+<div class="container">
+    {% if showmessage %}
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-dismissible alert-success">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>{{ messagetitle }}</strong> 
+                    {{messagebody}}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col">
+            <h3>Muokkaa nakkia</h3>
+            <p>
+                Muokataan nakkia tapahtumassa <b>{{ event.name }}</b><br>
+                <a href="/event/{{ event.id }}">Palaa tapahtumaan.</a>
+            </p>
+            <form action="/editnakki/{{ nakki.id }}/" method="post">
+                {% csrf_token %}
+                <fieldset>
+                <div class="form-group">
+                    <label class="col-form-label" for="task">Tehtävä</label>
+                    <input class="form-control" placeholder="" id="task" name="task" type="text" value="{{ nakki.task }}">
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="personcount">Henkilömäärä</label>
+                    <input class="form-control" placeholder="" id="personcount" name="personcount" type="number" min="1" value="{{ nakki.personcount }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Päivämäärä</label>
+                    <input class="form-control" type="date" id="date" name="date" value="{{ datehack }}">
+                    <small id="dateHelp" class="form-text text-muted">Mikäli jätät kentän tyhjäksi päivämääräksi asetetaan tapahtuman päivämäärä.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="starttime">Aloitusaika</label>
+                    <input class="form-control" type="time" id="starttime" name="starttime" value="{{ starttimehack }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="endtime">Päättymisaika</label>
+                    <input class="form-control" type="time" id="endtime" name="endtime" value="{{ endtimehack }}">
+                </div>
+
+
+                <button type="submit" class="btn btn-primary">Muokkaa nakkia</button>
+                </fieldset>
+            </form>
+        </div>
+        <div class="col">
+            <h3>Ohje</h3>
+            <p>
+            Tapahtumasivulla nakit järjestetään ensisijaisesti päivämäärän ja toissijaisesti aloitusajan mukaan. Mikäli jätät päivämäärän tyhjäksi niin nakille asetetaan tapahtuman päivämäärä. Henkilömäärä on maksimimäärä henkilöitä, jotka voivat ilmoittautua yhteen nakkiin.
+            </p>
+        </div>
+    </div>
+</div>

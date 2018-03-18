@@ -44,7 +44,7 @@ class Event(models.Model):
         on_delete=models.CASCADE,
     )
     def __str__(self):
-        return self.name
+        return self.organizer.name + ": " + self.name
 
 class Nakki(models.Model):
     event = models.ForeignKey(
@@ -68,7 +68,7 @@ class Nakki(models.Model):
         validators=[MinValueValidator(1)]
     )
     def __str__(self):
-        return self.task + " @ " + self.event.name
+        return self.task + " @ " + self.event.name + " by " + self.event.organizer.name
 
 class Nakittautuminen(models.Model):
     nakki = models.ForeignKey(

@@ -3,37 +3,35 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <h3>Lisää tapahtuma</h3>
-            <form action="/addevent/" method="post">
+            <h3>Muokkaa tapahtumaa</h3>
+            <form action="/editevent/{{ event.id }}/" method="post">
                 {% csrf_token %}
                 <fieldset>
                 <div class="form-group">
                     <label class="col-form-label" for="eventname">Tapahtuman nimi</label>
-                    <input class="form-control" placeholder="" id="eventname" name="eventname" type="text">
+                    <input class="form-control" placeholder="" id="eventname" name="eventname" type="text" value="{{ event.name }}">
                 </div>
                 <div class="form-group">
                     <label for="org">Järjestäjä</label>
                     <select class="form-control" id="org" name="org">
-                        {% for club in orgadmin %}
-                            <option>{{club}}</option>
-                        {% endfor %}
+                        <option>{{event.organizer}}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label class="col-form-label" for="venue">Venue</label>
-                    <input class="form-control" placeholder="" id="venue" name="venue" type="text">
+                    <input class="form-control" placeholder="" id="venue" name="venue" type="text" value="{{ event.venue }}">
                 </div>
                 <div class="form-group">
                     <label for="description">Kuvaus</label>
-                    <textarea class="form-control" id="description" name="description" rows="5"></textarea>
+                    <textarea class="form-control" id="description" name="description" rows="5">{{ event.description }}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="pvm">Ajankohta</label>
-                    <input class="form-control" type="date" id="pvm" name="pvm">
+                    <input class="form-control" type="date" id="pvm" name="pvm" value="{{ datehack }}">
                     <small id="pvmHelp" class="form-text text-muted">Moderneilla selaimilla voit käyttää kalenterivalitsinta, esimerkiksi Safarilla joudut syöttämään päivämäärän käsin muodossa yyyy-mm-dd.</small>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Lisää tapahtuma</button>
+                <button type="submit" class="btn btn-primary">Muokkaa tapahtumaa</button>
                 </fieldset>
             </form>
         </div>
