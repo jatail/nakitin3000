@@ -65,7 +65,6 @@ def frontpage(request):
 def eventpage(request, event_id):
     event = Event.objects.get(id=event_id)
     nakit = Nakki.objects.filter(event=event).order_by('date', 'starttime')
-
     try:
         Orgadmin.objects.get(person=request.user, organization=event.organizer)
         orgadmin = True
@@ -75,7 +74,8 @@ def eventpage(request, event_id):
         orgadmin = False
     #nakittautumiset = Nakittautuminen.objects.filter.select_related(nakki.event == event)
     nakittautumiset = Nakittautuminen.objects.filter(nakki__event = event)
-    return render(request, "nakit/eventpage.html", {'event': event, 'nakit': nakit, 'nakittautumiset': nakittautumiset, 'orgadmin': orgadmin})
+    current = request.user.id
+    return render(request, "nakit/eventpage.html", {'event': event, 'nakit': nakit, 'nakittautumiset': nakittautumiset, 'orgadmin': orgadmin, 'current': current})
 
 @login_required
 @require_http_methods(["POST"])

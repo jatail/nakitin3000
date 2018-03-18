@@ -15,7 +15,7 @@
                     <label for="org">Järjestäjä</label>
                     <select class="form-control" id="org" name="org">
                         {% for club in orgadmin %}
-                            <option>{{club}}</option>
+                            <option>{{club.organization}}</option>
                         {% endfor %}
                     </select>
                 </div>

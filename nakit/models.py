@@ -70,6 +70,16 @@ class Nakki(models.Model):
     def __str__(self):
         return self.task + " @ " + self.event.name + " by " + self.event.organizer.name
 
+    def countnakittautumiset(self):
+        nakkicount = Nakittautuminen.objects.filter(nakki = self)
+        return nakkicount.count()
+
+    def isfull(self):
+        if self.countnakittautumiset() == self.personcount:
+            return True
+        else:
+            return False
+
 class Nakittautuminen(models.Model):
     nakki = models.ForeignKey(
         Nakki,
@@ -92,4 +102,4 @@ class Orgadmin(models.Model):
         on_delete=models.CASCADE,
     )
     def __str__(self):
-        return self.organization.name
+        return self.organization.name + ": " + self.person.first_name + " " + self.person.last_name

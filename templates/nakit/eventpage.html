@@ -26,15 +26,15 @@
             {% for nakki in nakit %}
             <p>
             <div class="card border-secondary mb-3" style="max-width: 20rem;">
-            <div class="card-header">{{ nakki.date }} klo {{ nakki.starttime }} - {{ nakki.endtime }}</div>
+            <div class="card-header"><h4 class="card-title">{{ nakki.task }}</h4> <b>{{ nakki.date | date:"l" }} {{ nakki.date }}</b><br> klo {{ nakki.starttime }} - {{ nakki.endtime }}</div>
                 <div class="card-body">
-                    <h4 class="card-title">{{ nakki.task }}</h4>
+                    
                     <p>
                         {% if orgadmin %} <a href="/editnakki/{{ nakki.id }}"><button type="button" class="btn btn-small">Muokkaa nakkia</button></a> {% endif %}
                     </p>
                     <p class="card-text">
-                        Paikkoja: {{ nakki.personcount }} <br>
-                        Nakissa: 
+                        Nakissa: {{ nakki.countnakittautumiset }} / {{ nakki.personcount }} <br>
+                        Henkilöt: 
                         {% for item in nakittautumiset %}
                             {% if item.nakki == nakki %}
                                 <br>
@@ -42,15 +42,16 @@
                             {% endif %}
                         {% endfor %}
                     {% if user.is_authenticated %}
-                    <form action="/regnakki/{{ nakki.id }}/" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-primary">Nakittaudu</button>
-                    </form>
-                    <br>
-                    <form action="/cancelnakki/{{ nakki.id }}/" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-secondary">Jänistä</button>
-                    </form>
+                        {% if not nakki.isfull %}
+                            <form action="/regnakki/{{ nakki.id }}/" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Nakittaudu</button>
+                            </form>
+                        {% endif %}
+                        <form action="/cancelnakki/{{ nakki.id }}/" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary">Jänistä</button>
+                        </form>
                 {% else %}
                     <p class="text-warning">Nakittautuminen vaatii rekisteröitymisen!</p>
                 {% endif %}
