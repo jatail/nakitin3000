@@ -45,6 +45,8 @@ class Event(models.Model):
     )
     def __str__(self):
         return self.organizer.name + ": " + self.name
+    def datetxt(self):
+        return str(self.date)
 
 class Nakki(models.Model):
     event = models.ForeignKey(
@@ -79,6 +81,25 @@ class Nakki(models.Model):
             return True
         else:
             return False
+
+    def datetxt(self):
+        return str(self.date)
+
+    def starttimetxt(self):
+        return str(self.starttime)
+
+    def endtimetxt(self):
+        return str(self.endtime)
+
+    def countedIn(self, user):
+        try:
+            nakkicount = Nakittautuminen.objects.filter(nakki = self, person = user).count()
+        except TypeError:
+            return True
+        if nakkicount == 0:
+            return False
+        else:
+            return True
 
 class Nakittautuminen(models.Model):
     nakki = models.ForeignKey(

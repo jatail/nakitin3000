@@ -42,16 +42,19 @@
                             {% endif %}
                         {% endfor %}
                     {% if user.is_authenticated %}
-                        {% if not nakki.isfull %}
-                            <form action="/regnakki/{{ nakki.id }}/" method="post">
+                        {% if not nakki.along %}
+                            {% if not nakki.isfull %}
+                                <form action="/regnakki/{{ nakki.id }}/" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary">Nakittaudu</button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            <form action="/cancelnakki/{{ nakki.id }}/" method="post">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-primary">Nakittaudu</button>
+                                <button type="submit" class="btn btn-secondary">Jänistä</button>
                             </form>
                         {% endif %}
-                        <form action="/cancelnakki/{{ nakki.id }}/" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-secondary">Jänistä</button>
-                        </form>
                 {% else %}
                     <p class="text-warning">Nakittautuminen vaatii rekisteröitymisen!</p>
                 {% endif %}

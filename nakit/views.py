@@ -73,6 +73,8 @@ def eventpage(request, event_id):
     except TypeError:
         orgadmin = False
     #nakittautumiset = Nakittautuminen.objects.filter.select_related(nakki.event == event)
+    for nakki in nakit:
+        nakki.along = nakki.countedIn(request.user)
     nakittautumiset = Nakittautuminen.objects.filter(nakki__event = event)
     current = request.user.id
     return render(request, "nakit/eventpage.html", {'event': event, 'nakit': nakit, 'nakittautumiset': nakittautumiset, 'orgadmin': orgadmin, 'current': current})
@@ -257,8 +259,7 @@ def editevent(request, event_id):
         redirectUrl = '/event/' + str(event.id)
         return redirect(redirectUrl)
     else:
-        datehack = str(event.date)
-        return render(request, "nakit/editevent.html", {'event': event, 'datehack': datehack})
+        return render(request, "nakit/editevent.html", {'event': event})
     
 @login_required
 def editnakki(request, nakki_id):
@@ -292,7 +293,4 @@ def editnakki(request, nakki_id):
         redirectUrl = '/event/' + str(event.id)
         return redirect(redirectUrl)
     else:
-        datehack = str(nakki.date)
-        starttimehack = str(nakki.starttime)
-        endtimehack = str(nakki.endtime)
-        return render(request, "nakit/editnakki.html", {'event': event, 'nakki': nakki, 'datehack': datehack, 'starttimehack': starttimehack, 'endtimehack': endtimehack})
+        return render(request, "nakit/editnakki.html", {'event': event, 'nakki': nakki})
