@@ -3,69 +3,73 @@
 <div class="container">
     <div class="row">
         <div class="col">
-        <h1>{{ event.name }}</h1> 
-        <p>
-            Järjestäjä: <b>{{ event.organizer }}</b> <br>
-            Päivämäärä: <b>{{ event.date }}</b> <br>
-            Venue: <b>{{ event.venue }}</b> <br>
-        </p>
-        <p>
-        {% if orgadmin %} <a href="/editevent/{{ event.id }}"><button type="button" class="btn btn-primary">Muokkaa</button></a> {% endif %}
-        </p>
-        <p>
-            {{ event.description}}
-        </p> 
-
-        <p>
-            <h2>Nakit</h2>
-            {% if orgadmin %}
+            <h1>{{ event.name }}</h1> 
             <p>
-                <a href="/addnakki/{{ event.id }}"><button type="button" class="btn btn-primary btn-lg">Lisää nakki tapahtumaan</button></a>
+                Järjestäjä: <b>{{ event.organizer }}</b> <br>
+                Päivämäärä: <b>{{ event.date }}</b> <br>
+                Venue: <b>{{ event.venue }}</b> <br>
             </p>
-            {% endif %}
-            {% for nakki in nakit %}
             <p>
-            <div class="card border-secondary mb-3" style="max-width: 20rem;">
-            <div class="card-header"><h4 class="card-title">{{ nakki.task }}</h4> <b>{{ nakki.date | date:"l" }} {{ nakki.date }}</b><br> klo {{ nakki.starttime }} - {{ nakki.endtime }}</div>
-                <div class="card-body">
-                    
+                {% if orgadmin %} <a href="/editevent/{{ event.id }}"><button type="button" class="btn btn-primary">Muokkaa</button></a> {% endif %}
+            </p>
+            <p>
+                {{ event.description}}
+            </p> 
+
+            <p>
+                <h2>Nakit</h2>
+                {% if orgadmin %}
                     <p>
-                        {% if orgadmin %} <a href="/editnakki/{{ nakki.id }}"><button type="button" class="btn btn-small">Muokkaa nakkia</button></a> {% endif %}
+                        <a href="/addnakki/{{ event.id }}"><button type="button" class="btn btn-primary btn-lg">Lisää nakki tapahtumaan</button></a>
                     </p>
-                    <p class="card-text">
-                        Nakissa: {{ nakki.countnakittautumiset }} / {{ nakki.personcount }} <br>
-                        Henkilöt: 
-                        {% for item in nakittautumiset %}
-                            {% if item.nakki == nakki %}
-                                <br>
-                                <b>{{ item.person.first_name }} {{ item.person.last_name }}</b>
-                            {% endif %}
-                        {% endfor %}
-                    {% if user.is_authenticated %}
-                        {% if not nakki.along %}
-                            {% if not nakki.isfull %}
-                                <form action="/regnakki/{{ nakki.id }}/" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-primary">Nakittaudu</button>
-                                </form>
-                            {% endif %}
-                        {% else %}
-                            <form action="/cancelnakki/{{ nakki.id }}/" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-secondary">Jänistä</button>
-                            </form>
-                        {% endif %}
-                {% else %}
-                    <p class="text-warning">Nakittautuminen vaatii rekisteröitymisen!</p>
                 {% endif %}
-                    </p>
-                </div>
-            </div>
-            {% empty %}
-                <b>Ei nakkeja</b>
-            {% endfor %}
-        </p> 
-    
         </div>
+    </div>
+    
+    <div class="row">
+                {% for nakki in nakit %}
+        <div class="col">
+                    <div class="card border-secondary mb-3" style="max-width: 20rem;">
+                        <div class="card-header">
+                            <h4 class="card-title">{{ nakki.task }}</h4> <b>{{ nakki.date | date:"l" }} {{ nakki.date }}</b><br> klo {{ nakki.starttime }} - {{ nakki.endtime }}
+                        </div>
+                        <div class="card-body">
+                        
+                            <p>
+                                {% if orgadmin %} <a href="/editnakki/{{ nakki.id }}"><button type="button" class="btn btn-small">Muokkaa nakkia</button></a> {% endif %}
+                            </p>
+                            <p class="card-text">
+                                Nakissa: {{ nakki.countnakittautumiset }} / {{ nakki.personcount }} <br>
+                                Henkilöt: 
+                                {% for item in nakittautumiset %}
+                                    {% if item.nakki == nakki %}
+                                        <br>
+                                        <b>{{ item.person.first_name }} {{ item.person.last_name }}</b>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if user.is_authenticated %}
+                                    {% if not nakki.along %}
+                                        {% if not nakki.isfull %}
+                                            <form action="/regnakki/{{ nakki.id }}/" method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-primary">Nakittaudu</button>
+                                            </form>
+                                        {% endif %}
+                                    {% else %}
+                                        <form action="/cancelnakki/{{ nakki.id }}/" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-secondary">Jänistä</button>
+                                    </form>
+                                    {% endif %}
+                                {% else %}
+                                    <p class="text-warning">Nakittautuminen vaatii rekisteröitymisen!</p>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+        </div>    
+                {% empty %}
+                    <b>Ei nakkeja</b>
+                {% endfor %}
     </div>
 </div>

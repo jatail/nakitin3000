@@ -15,6 +15,10 @@ from django.contrib.auth.forms import PasswordChangeForm
 #tein oman rekisteröitymissivun, koska tottakai.
 def signup(request):
     if request.method == 'POST':
+        if (' ' in request.POST.get('username')):
+            raiseerror = True
+            errortext = 'Käyttäjätunnuksessa ei voi olla välilyöntiä.'
+            return render(request, "nakit/signup.html", {'raiseerror': raiseerror, 'errortext': errortext})              
         #vaaditaan ettei yksikään täytetyistä kentistä ole tyhjänä.
         if (request.POST.get('first').replace(' ', '') == "") or (request.POST.get('last').replace(' ', '') == "") or (request.POST.get('username') == "") or (request.POST.get('email') == "") or (request.POST.get('password1') == "") or (request.POST.get('password2') == ""):
             raiseerror = True
