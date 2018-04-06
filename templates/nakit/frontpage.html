@@ -3,8 +3,8 @@
 <div class="container">
     <div class="row">
         <div class="col">
+        <h3> Tulevat tapahtumat </h3>
             <ul>
-                <h3> Tulevat tapahtumat </h3>
                 {% for event in upcomingevents %}
                     <li><a href="event/{{ event.id }}">{{ event.name }}, {{ event.date }} ({{event.organizer.name}})</a></li>
                 {% empty %}
