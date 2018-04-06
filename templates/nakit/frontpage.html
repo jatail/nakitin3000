@@ -6,7 +6,7 @@
             <ul>
                 <h3> Tulevat tapahtumat </h3>
                 {% for event in upcomingevents %}
-                    <li><a href="event/{{ event.id }}">{{event.organizer.name}}: {{ event.name }}, {{ event.date }}</a></li>
+                    <li><a href="event/{{ event.id }}">{{ event.name }}, {{ event.date }} ({{event.organizer.name}})</a></li>
                 {% empty %}
                     <li>Ei tulevia tapahtumia.</li>
                 {% endfor %}
@@ -23,6 +23,7 @@
             </p>
             <p>
             <b>Versiohistoria</b><br>
+            0.2.1.0 - Ulkoasun muokkausta, nakkien järjestämisperustetta muutettu. Kiitos palautteesta!<br>
             0.2.0.5 - Siistitty tapahtumasivua ja siivottu logiikkaa.<br>
             0.2 - Lisätty tapahtumajärjestäjille mahdollisuus muokata tapahtumia ja nakkeja.<br>
             0.1.1 - Päivitetty tekstit suurinpiirtein järkeviksi, ei enää lorem ipsumia ja seitsemää veljestä.<br>

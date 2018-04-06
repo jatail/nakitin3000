@@ -1,0 +1,19 @@
+.navbar {
+    margin-bottom: 30px;
+  }
+
+
+.eventdesc {
+    text-align: justify;
+}
+
+
+.card{
+    flex-grow: 1;
+}
+
+
+.col{
+    display: flex;
+    flex-direction: column;
+}

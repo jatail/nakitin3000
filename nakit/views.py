@@ -68,7 +68,7 @@ def frontpage(request):
 
 def eventpage(request, event_id):
     event = Event.objects.get(id=event_id)
-    nakit = Nakki.objects.filter(event=event).order_by('date', 'starttime')
+    nakit = Nakki.objects.filter(event=event).order_by('task', 'date', 'starttime')
     try:
         Orgadmin.objects.get(person=request.user, organization=event.organizer)
         orgadmin = True
@@ -123,8 +123,9 @@ def orgs(request):
 def org(request, org_id):
     organizer = Organization.objects.get(id=org_id)
     datenow = timezone.now().date()
+    datenowminusone = timezone.now() - timezone.timedelta(days=1)
     events_upcoming = Event.objects.filter(organizer=organizer, date__range=[datenow, "2100-12-31"]).order_by('date')
-    events_past = Event.objects.filter(organizer=organizer, date__range=["1970-01-01", datenow]).order_by('-date')
+    events_past = Event.objects.filter(organizer=organizer, date__range=["1970-01-01", datenowminusone]).order_by('-date')
 
     return render(request, "nakit/org.html", {'events_upcoming': events_upcoming, 'events_past' : events_past, 'org_name': organizer.name})
 
