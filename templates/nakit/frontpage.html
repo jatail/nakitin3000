@@ -4,6 +4,25 @@
     <div class="row">
         <div class="col">
         <h3> Tulevat tapahtumat </h3>
+            <table class="table table-hover ">
+                <tbody>
+                    {% for event in upcomingevents %}
+                        <tr>
+                            <th><a class="fp" href="event/{{ event.id }}">{{ event.name }}</a></th>
+                            <th>{{ event.date|date:"SHORT_DATE_FORMAT" }}</th>
+                            <th>{{event.organizer.name}}</th>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <th></th>
+                            <th>Ei tulevia tapahtumia.</th>
+                            <th></th>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!--
             <ul class="list-group list-group-flush">
                 {% for event in upcomingevents %}
                     <li class="list-group-item"><a class="fp" href="event/{{ event.id }}">{{ event.name }}, {{ event.date|date:"SHORT_DATE_FORMAT" }} ({{event.organizer.name}})</a></li>
@@ -12,6 +31,7 @@
                 {% endfor %}
                 <li class="list-group-item"></li>
             </ul>
+            -->
             
         </div>
         <div class="col">
