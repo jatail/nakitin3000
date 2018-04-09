@@ -5,11 +5,11 @@
         <div class="col">
 
             <h3>Rekisteröityneet yhdistykset</h3>
-            <ul>
+            <ul class="list-group list-group-flush">
                 {% for org in organizations %}
-                    <li><a href="/org/{{ org.id }}">{{ org.name }}</a></li>
+                    <li class="list-group-item"><a class="fp" href="/org/{{ org.id }}">{{ org.name }}</a></li>
                 {% empty %}
-                    <li>Ei rekisteröityneitä järjestöjä</li>
+                    <li class="list-group-item">Ei rekisteröityneitä järjestöjä</li>
                 {% endfor %}
             </ul>
             

@@ -4,12 +4,13 @@
     <div class="row">
         <div class="col">
         <h3> Tulevat tapahtumat </h3>
-            <ul>
+            <ul class="list-group list-group-flush">
                 {% for event in upcomingevents %}
-                    <li><a href="event/{{ event.id }}">{{ event.name }}, {{ event.date }} ({{event.organizer.name}})</a></li>
+                    <li class="list-group-item"><a class="fp" href="event/{{ event.id }}">{{ event.name }}, {{ event.date|date:"SHORT_DATE_FORMAT" }} ({{event.organizer.name}})</a></li>
                 {% empty %}
-                    <li>Ei tulevia tapahtumia.</li>
+                    <li class="list-group-item">Ei tulevia tapahtumia.</li>
                 {% endfor %}
+                <li class="list-group-item"></li>
             </ul>
             
         </div>
