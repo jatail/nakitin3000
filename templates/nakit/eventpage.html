@@ -21,6 +21,8 @@
                 {% if orgadmin %}
                     <p>
                         <a href="/addnakki/{{ event.id }}"><button type="button" class="btn btn-primary btn-lg">Lisää nakki tapahtumaan</button></a>
+                        <a href="/evente/{{ event.id }}"><button type="button" class="btn btn-primary btn-lg">Vie nakittautujat exceliin</button></a><br>
+                        Huom! Nakittautuneiden tietoja saa käyttää vain <i>{{ event.name }}</i> nakkeihin liittyvässä tiedoituksessa. Tiedot tulee hävittää tapahtuman jälkeen.
                     </p>
                 {% endif %}
         </div>

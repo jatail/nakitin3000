@@ -10,6 +10,9 @@ from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+
+from django.http import HttpResponse
+import csv
 # Create your views here.
 
 #tein oman rekisteröitymissivun, koska tottakai.
@@ -82,6 +85,26 @@ def eventpage(request, event_id):
     nakittautumiset = Nakittautuminen.objects.filter(nakki__event = event)
     current = request.user.id
     return render(request, "nakit/eventpage.html", {'event': event, 'nakit': nakit, 'nakittautumiset': nakittautumiset, 'orgadmin': orgadmin, 'current': current})
+
+
+@login_required
+def exportnakkilaiset(request, event_id):
+    event = Event.objects.get(id=event_id)
+    try:
+        Orgadmin.objects.get(person=request.user, organization=event.organizer)
+    except Orgadmin.DoesNotExist:
+        messagetitle = 'Virhe!'
+        messagebody = 'Oikeudet puuttuu senkin rosmo.'
+        return render(request, "nakit/messagepage.html", {'messagetitle': messagetitle, 'messagebody': messagebody})
+    nakittautumiset = Nakittautuminen.objects.filter(nakki__event = event)
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="export.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
+    writer = csv.writer(response, delimiter=';' , dialect='excel')
+    writer.writerow(['Nakki', 'Pvm', 'Klo', 'Etunimi', 'Sukunimi', 'Sähköposti'])
+    for entry in nakittautumiset:
+        writer.writerow([entry.nakki.task, entry.nakki.date, str(entry.nakki.starttime.strftime("%H:%M")) + '-' + str(entry.nakki.endtime.strftime("%H:%M")), entry.person.first_name, entry.person.last_name, entry.person.email])
+    return response
 
 @login_required
 @require_http_methods(["POST"])
