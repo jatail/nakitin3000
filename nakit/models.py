@@ -5,17 +5,6 @@ from django.utils import timezone
 
 User = get_user_model()
 
-class Eventmaker(models.Model):
-    canAdd = models.BooleanField(
-        default = True,
-    )
-    user = models.OneToOneField(
-        User,
-        on_delete = models.CASCADE,
-    )
-    def __str__(self):
-        return self.user.first_name + " " + self.user.last_name
-
 # Create your models here.
 class Organization(models.Model):
     name = models.CharField(

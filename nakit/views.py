@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
-from nakit.models import Organization, Event, Nakki, Nakittautuminen, Orgadmin, Eventmaker
+from nakit.models import Organization, Event, Nakki, Nakittautuminen, Orgadmin
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_http_methods
