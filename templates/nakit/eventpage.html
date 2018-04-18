@@ -30,7 +30,7 @@
     
     <div class="row">
                 {% for nakki in nakit %}
-        <div class="col">
+        <div class="col-sm-4">
                     <div class="card border-secondary mb-3" style="max-width: 20rem;">
                         <div class="card-header">
                             <h4 class="card-title">{{ nakki.task }}</h4> <b>{{ nakki.date | date:"l" }} {{ nakki.date |date:"SHORT_DATE_FORMAT" }}</b><br> klo {{ nakki.starttime }} - {{ nakki.endtime }}
