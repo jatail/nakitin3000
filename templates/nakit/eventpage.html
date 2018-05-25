@@ -37,18 +37,27 @@
                         </div>
                         <div class="card-body">
                         
-                            <p>
-                                {% if orgadmin %} <a href="/editnakki/{{ nakki.id }}"><button type="button" class="btn btn-small">Muokkaa nakkia</button></a> {% endif %}
-                            </p>
+                            {% if orgadmin %} <p>
+                                <a href="/editnakki/{{ nakki.id }}"><button type="button" class="btn btn-small">Muokkaa nakkia</button></a> 
+                            </p> {% endif %}
                             <p class="card-text">
                                 Nakissa: {{ nakki.countnakittautumiset }} / {{ nakki.personcount }} <br>
-                                Henkilöt: 
-                                {% for item in nakittautumiset %}
-                                    {% if item.nakki == nakki %}
-                                        <br>
-                                        <b>{{ item.person.first_name }} {{ item.person.last_name }}</b>
+                                    {% if orgadmin %}
+                                    Henkilöt: 
+                                        {% for item in nakittautumiset %}
+                                            {% if item.nakki == nakki %}
+                                                <br>
+                                                <b>{{ item.person.first_name }} {{ item.person.last_name }}</b>
+                                            {% endif %}
+                                        {% endfor %}
                                     {% endif %}
-                                {% endfor %}
+                                <br>
+                                {% if user.is_authenticated and nakki.along %}
+                                    Olet nakissa.
+                                {% else %}                    
+                                    Et ole nakissa.
+                                {% endif %}
+
                                 {% if user.is_authenticated %}
                                     {% if not nakki.along %}
                                         {% if not nakki.isfull %}
@@ -56,11 +65,15 @@
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-primary">Nakittaudu</button>
                                             </form>
+                                        {% else %}
+                                            <form>
+                                            <button class="btn btn-secondary">Nakki täynnä!</button>
+                                            </form>
                                         {% endif %}
                                     {% else %}
                                         <form action="/cancelnakki/{{ nakki.id }}/" method="post">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-secondary">Jänistä</button>
+                                        <button type="submit" class="btn btn-danger">Jänistä</button>
                                     </form>
                                     {% endif %}
                                 {% else %}
