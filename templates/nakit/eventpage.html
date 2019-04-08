@@ -42,7 +42,7 @@
                             </p> {% endif %}
                             <p class="card-text">
                                 Nakissa: {{ nakki.countnakittautumiset }} / {{ nakki.personcount }} <br>
-                                    {% if orgadmin %}
+                                    {% if user.is_authenticated %}
                                     Henkilöt: 
                                         {% for item in nakittautumiset %}
                                             {% if item.nakki == nakki %}
