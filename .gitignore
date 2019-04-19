@@ -112,3 +112,6 @@ db.sqlite3
 secret_key.txt
 local.py
 nakitin3000/settings.py
+
+nakit/migrations/0004_auto_20190419_1810.py
+tags
