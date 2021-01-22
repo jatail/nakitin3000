@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  nakitin:
+    build: .
+    command: python manage.py makemigrations
+    command: python manage.py migrate
+    command: python manage.py runserver 0.0.0.0:888
+    container_name: nakitin
+    volumes:
+      - .:/nakitin
+    ports:
+      - "888:888"
