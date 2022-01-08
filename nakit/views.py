@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import logout
 
 from django.http import HttpResponse
 import csv
@@ -50,7 +51,7 @@ def signup(request):
                     newuser.first_name = request.POST.get('first')
                     newuser.last_name = request.POST.get('last') 
                     newuser.save()
-                    return redirect('/login')
+                    return redirect('/accounts/login')
                 except:
                     raiseerror = True
                     errortext = 'Tapahtui tuntematon virhe. Ole hyvä ja yritä uudelleen. Jos ongelma toistuu ota yhteys ylläpitoon.'
@@ -322,3 +323,9 @@ def editnakki(request, nakki_id):
         return redirect(redirectUrl)
     else:
         return render(request, "nakit/editnakki.html", {'event': event, 'nakki': nakki})
+
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
