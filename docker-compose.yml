@@ -1,11 +1,11 @@
-version: '2'
+version: '3'
 
 services:
   nakitin:
     build: .
-    command: python manage.py makemigrations
-    command: python manage.py migrate
-    command: python manage.py runserver 0.0.0.0:888
+    stdin_open: true
+    tty: true
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:888"
     container_name: nakitin
     volumes:
       - .:/nakitin
